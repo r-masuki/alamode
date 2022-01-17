@@ -897,7 +897,7 @@ void Constraint::generate_translational_constraint(const Cell &supercell,
             continue;
         }
 
-        if(mirror_image_conv > 0 || order == 0){
+        if(mirror_image_conv == 0 || order == 0){
             get_constraint_translation(supercell,
                                     symmetry,
                                     cluster,
