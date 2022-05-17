@@ -20,6 +20,7 @@
 #include "files.h"
 #include "patterndisp.h"
 #include "timer.h"
+#include "writer.h"
 
 namespace ALM_NS {
 class ALM {
@@ -31,6 +32,8 @@ public:
     class Cluster *cluster{};
 
     class Fcs *fcs{};
+
+    class System *system{};
 
     class Symmetry *symmetry{};
 
@@ -44,13 +47,13 @@ public:
 
     class Timer *timer{};
 
+    class Writer *writer{};
+
     void set_verbosity(int verbosity_in);
 
     int get_verbosity() const;
 
     void set_output_filename_prefix(std::string prefix) const;
-
-    void set_print_hessian(bool print_hessian) const;
 
     void set_print_symmetry(int printsymmetry) const;
 
@@ -178,6 +181,10 @@ public:
 
     void set_fc(double *fc_in) const;
 
+    void set_fc_zero_threshold(const double threshold_in);
+
+    double get_fc_zero_threshold() const;
+
     void get_matrix_elements(double *amat,
                              double *bvec) const;
 
@@ -187,8 +194,15 @@ public:
 
     void init_fc_table();
 
+    void save_fc(const std::string filename,
+                 const std::string fc_format,
+                 const int maxorder_to_save) const;
+
+    void set_fcs_save_flag(const std::string fcs_format, const int val) const;
+
+    int get_fcs_save_flag(const std::string fcs_format) const;
+
 private:
-    class System *system{};
 
     int verbosity;
     bool structure_initialized;

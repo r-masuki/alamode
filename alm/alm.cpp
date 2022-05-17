@@ -44,6 +44,7 @@ ALM::~ALM()
     delete constraint;
     delete displace;
     delete timer;
+    delete writer;
 }
 
 void ALM::init_instances()
@@ -57,6 +58,7 @@ void ALM::init_instances()
     constraint = new Constraint();
     displace = new Displace();
     timer = new Timer();
+    writer = new Writer();
 }
 
 void ALM::set_verbosity(const int verbosity_in)
@@ -72,11 +74,6 @@ int ALM::get_verbosity() const
 void ALM::set_output_filename_prefix(const std::string prefix) const // PREFIX
 {
     files->set_prefix(prefix);
-}
-
-void ALM::set_print_hessian(const bool print_hessian) const // HESSIAN
-{
-    files->print_hessian = print_hessian;
 }
 
 void ALM::set_print_symmetry(const int printsymmetry) const // PRINTSYM
@@ -211,12 +208,12 @@ std::string ALM::get_forceconstant_basis() const
 
 void ALM::set_nmaxsave(const int nmaxsave) const // NMAXSAVE
 {
-    files->set_output_maxorder(nmaxsave);
+    writer->set_output_maxorder(nmaxsave);
 }
 
 int ALM::get_nmaxsave() const
 {
-    return files->get_output_maxorder();
+    return writer->get_output_maxorder();
 }
 
 void ALM::define(const int maxorder,
@@ -579,6 +576,16 @@ void ALM::set_fc(double *fc_in) const
                                      optimize->get_params());
 }
 
+void ALM::set_fc_zero_threshold(const double threshold_in)
+{
+    fcs->set_fc_zero_threshold(threshold_in);
+}
+
+double ALM::get_fc_zero_threshold() const
+{
+    return fcs->get_fc_zero_threshold();
+}
+
 void ALM::get_matrix_elements(double *amat,
                               double *bvec) const
 {
@@ -641,7 +648,7 @@ int ALM::run_optimize()
                                               verbosity,
                                               files->get_datfile_train(),
                                               files->get_datfile_validation(),
-                                              files->get_output_maxorder(),
+                                              writer->get_output_maxorder(),
                                               timer);
     return info;
 }
@@ -663,7 +670,6 @@ void ALM::init_fc_table()
 
     if (structure_initialized) return;
     system->init(verbosity, timer);
-    files->init();
     symmetry->init(system, verbosity, timer);
     structure_initialized = true;
 
@@ -682,4 +688,31 @@ void ALM::init_fc_table()
     // Switch off the ready flag because the force constants are updated
     // but corresponding constranits are not.
     ready_to_fit = false;
+}
+
+void ALM::save_fc(const std::string filename,
+                  const std::string fcs_format,
+                  const int maxorder_to_save) const
+{
+    writer->set_output_maxorder(maxorder_to_save);
+    writer->set_filename_fcs(filename);
+    writer->save_fcs_with_specific_format(fcs_format,
+                                          system,
+                                          symmetry,
+                                          cluster,
+                                          constraint,
+                                          fcs,
+                                          optimize,
+                                          files,
+                                          verbosity);
+}
+
+void ALM::set_fcs_save_flag(const std::string fcs_format, const int val) const
+{
+    writer->set_fcs_save_flag(fcs_format, val);
+}
+
+int ALM::get_fcs_save_flag(const std::string fcs_format) const
+{
+    return writer->get_fcs_save_flag(fcs_format);
 }

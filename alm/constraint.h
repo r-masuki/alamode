@@ -342,11 +342,11 @@ private:
                                const double tolerance = eps12) const;
 
     // const_symmetry is updated.
-    void generate_symmetry_constraint_in_cartesian(const size_t nat,
-                                                   const Symmetry *symmetry,
-                                                   const Cluster *cluster,
-                                                   const Fcs *fcs,
-                                                   const int verbosity) const;
+    void generate_symmetry_constraint(const size_t nat,
+                                      const Symmetry *symmetry,
+                                      const Cluster *cluster,
+                                      const Fcs *fcs,
+                                      const int verbosity) const;
 
     void get_constraint_translation(const Cell &supercell,
                                     const Symmetry *symmetry,
@@ -357,16 +357,16 @@ private:
                                     const size_t nparams,
                                     ConstraintSparseForm &const_out,
                                     const bool do_rref = false) const;
-                        
+
     void get_constraint_translation_for_mirror_images(const Cell &supercell,
-                                    const Symmetry *symmetry,
-                                    const Cluster *cluster,
-                                    const Fcs *fcs,
-                                    const int order,
-                                    const std::vector<FcProperty> &fc_table,
-                                    const size_t nparams,
-                                    ConstraintSparseForm &const_out,
-                                    const bool do_rref) const;
+                                                      const Symmetry *symmetry,
+                                                      const Cluster *cluster,
+                                                      const Fcs *fcs,
+                                                      const int order,
+                                                      const std::vector<FcProperty> &fc_table,
+                                                      const size_t nparams,
+                                                      ConstraintSparseForm &const_out,
+                                                      const bool do_rref) const;
 
     // const_translation is updated.
     void generate_translational_constraint(const Cell &,
